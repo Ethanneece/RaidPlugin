@@ -1,0 +1,8 @@
+name: RaidPlugin 
+main: me.gotoe11.raid.Main
+version: 1.0 
+author: gotoe11
+commands: 
+   createNation:
+      description: creates a Nation. 
+      usage: /<command> [Nation name]  
