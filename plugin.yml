@@ -4,5 +4,14 @@ version: 1.0
 author: gotoe11
 commands: 
    createNation:
-      description: creates a Nation. 
-      usage: /<command> [Nation name]  
+      description: name of nation. 
+   addPlayer:
+      description: name of player being added.
+   removePlayer:
+      description: name of player being removed.
+   leaveNation:
+      description: leaves current Nation. 
+   transferLeadership:
+      description: player leadership being transferred to. 
+   raid: 
+      description: starts a raid at the current location.  

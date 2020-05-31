@@ -1,6 +1,7 @@
 package me.gotoe11.raid;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
@@ -16,7 +17,7 @@ public class Nation {
     //50 players are the maximum allowed number of players in a Nation. 
     private static final int PLAYER_MAX = 50; 
     
-    private ArrayList<Player> players; 
+    private List<Player> players; 
     private String name; 
     private Player leader; 
     
@@ -32,7 +33,25 @@ public class Nation {
         this.leader = leader; 
         this.name = name; 
         
-        leader.sendMessage("Nation:" + name + " successfully created!");
+        leader.sendMessage("Nation: " + name + " successfully created!");
+    }
+    
+    /**
+     *  
+     * @return the name of the nation. 
+     */
+    public String getName()
+    {
+        return name;
+    }
+    
+    /**
+     * 
+     * @return the list of players in the Nation. 
+     */
+    public List<Player> getPlayers()
+    {
+        return players; 
     }
     
     /**
@@ -132,6 +151,11 @@ public class Nation {
             return false; 
         }
         
+        if (players.contains(added))
+        {
+            caller.sendMessage("Player: " + added.getName() + "is already in the Nation");
+        }
+        
         if (!players.add(added))
         {
             System.out.println("Nation:" + name + " could not add " + added.getName());
@@ -191,7 +215,7 @@ public class Nation {
         return players.size() == PLAYER_MAX; 
     }
     
-    private boolean isLeader(Player player)
+    private boolean isLeader(Player player) 
     {
         return player.equals(leader);
     }

@@ -33,8 +33,65 @@ public class NationComand implements CommandExecutor {
         
         if (cmd.getName().equalsIgnoreCase("createNation"))
         {
+            NationController nationController = plugin.getNations(); 
             
-            new Nation(player, args[0]);
+            return nationController.createNation(player, args[0]);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("addPlayer"))
+        {
+            NationController nationController = plugin.getNations(); 
+            
+            Player applicant = plugin.getServer().getPlayer(args[0]);
+            
+            if (applicant == null)
+            {
+                sender.sendMessage("We can not find that player on the server.");
+            }
+            
+            return nationController.addPlayer(player, applicant);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("removePlayer"))
+        {
+            NationController nationController = plugin.getNations(); 
+            
+            Player applicant = plugin.getServer().getPlayer(args[0]);
+            
+            if (applicant == null)
+            {
+                player.sendMessage("We cannot find the player on the server.");
+            }
+            
+            return nationController.addPlayer(player, applicant);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("leaveNation"))
+        {
+            NationController nationController = plugin.getNations(); 
+            
+            return nationController.leaveNation(player);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("transferLeadership"))
+        {
+            NationController nationController = plugin.getNations(); 
+            
+            Player applicant = plugin.getServer().getPlayer(args[0]);
+            
+            if (applicant == null)
+            {
+                player.sendMessage("We cannot find that player on the server");
+            }
+            
+            return nationController.transferLeadership(player, applicant);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("raid"))
+        {
+            NationController nationController = plugin.getNations(); 
+            
+            return nationController.raid(player);
         }
         
         return true;
