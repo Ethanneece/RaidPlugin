@@ -2,6 +2,7 @@ package me.gotoe11.raid;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -18,6 +19,8 @@ public class Nation {
     private static final int PLAYER_MAX = 50; 
     
     private List<Player> players; 
+    private List<Player> playersInvited; 
+    private Location home; 
     private String name; 
     private Player leader; 
     
@@ -30,10 +33,12 @@ public class Nation {
     public Nation(Player leader, String name)
     {
         players = new ArrayList<Player>();
+        playersInvited = new ArrayList<Player>(); 
+        
         this.leader = leader; 
         this.name = name; 
         
-        leader.sendMessage("Nation: " + name + " successfully created!");
+        leader.sendMessage("Factions: " + name + " successfully created!");
     }
     
     /**
@@ -67,7 +72,7 @@ public class Nation {
         
         if (!isLeader(caller))
         {
-            caller.sendMessage("Only the leader of the Nation may remove someone!");
+            caller.sendMessage("Only the leader of the Factions may remove someone!");
             return false; 
         }
         
@@ -78,7 +83,7 @@ public class Nation {
         
         if (!players.contains(removed))
         {
-            caller.sendMessage("Person was not found in Nation.");
+            caller.sendMessage("Person was not found in factions.");
         }
         else
         {
@@ -114,7 +119,7 @@ public class Nation {
         
         if (isLeader(caller))
         {
-            caller.sendMessage("You must transfer ownership before leaving the Nation.");
+            caller.sendMessage("You must transfer ownership before leaving the faction.");
             return false; 
         }
         
@@ -139,30 +144,38 @@ public class Nation {
     {
         if (!isLeader(caller))
         {
-            caller.sendMessage("Only a leader of the Nation may add someone!");
+            caller.sendMessage("Only a leader of the Factions may add someone!");
             return false; 
         }
         
         if (isMaxSize())
         {
             caller.sendMessage("You guys have the maximum amount of players, to add someone else to the "
-                + "nation you must make space");
+                + "faction you must make space");
             
             return false; 
         }
         
         if (players.contains(added))
         {
-            caller.sendMessage("Player: " + added.getName() + "is already in the Nation");
+            caller.sendMessage("Player: " + added.getName() + "is already in the faction");
         }
         
-        if (!players.add(added))
+        playersInvited.add(added);
+        added.sendMessage("Player: " + caller.getName() + "Invited you to join faction " + name);
+        caller.sendMessage("Player: " + added.getName() + " was send a request");
+        return true; 
+    }
+    
+    public boolean accept(Player caller)
+    {
+        if (!playersInvited.contains(caller))
         {
-            System.out.println("Nation:" + name + " could not add " + added.getName());
-            return false; 
+            caller.sendMessage("You have to need a request to accept! ");
         }
         
-        caller.sendMessage("Player: " + added.getName() + " was added successfully");
+        players.add(caller);
+        caller.sendMessage("You have been accepted to faction " + name);
         return true; 
     }
     
@@ -190,7 +203,7 @@ public class Nation {
             return true;
         }
         
-        caller.sendMessage("To transfer ownership that player must be in your Nation");
+        caller.sendMessage("To transfer ownership that player must be in your faction");
         return false; 
     }
     
@@ -199,6 +212,15 @@ public class Nation {
         if (!isLeader(caller))
         {
             caller.sendMessage("Only the leader can create raids");
+            return false; 
+        }
+        
+        if (!isValidNation())
+        {
+            caller.sendMessage("You have to be a valid faction you need " + (REAL_NATION - players.size()) +
+                " more players.");
+            
+            return false; 
         }
         
         //TODO: Check if the caller is on the right block. 
@@ -210,9 +232,27 @@ public class Nation {
         return true; 
     }
     
+    public boolean setNationHome(Player caller)
+    {
+        if (!isLeader(caller))
+        {
+            caller.sendMessage("You have to be the leader to set the home.");
+            return false; 
+        }
+        
+        home = caller.getLocation(); 
+        return true; 
+    }
+    
+    public boolean nationHome(Player caller)
+    {
+        caller.teleport(home);
+        return true;
+    }
+    
     private boolean isMaxSize()
     {
-        return players.size() == PLAYER_MAX; 
+        return players.size() + playersInvited.size() == PLAYER_MAX; 
     }
     
     private boolean isLeader(Player player) 
@@ -222,6 +262,6 @@ public class Nation {
     
     private boolean isValidNation()
     {
-        return players.size() == REAL_NATION; 
+        return players.size() >= REAL_NATION; 
     }
 }
